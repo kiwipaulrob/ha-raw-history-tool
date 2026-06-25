@@ -1,74 +1,40 @@
 #
 # get_raw_history.yaml — Raw Entity State History Tool for Home Assistant
-#
-# Drop this file into your packages/ directory (e.g. /config/packages/)
-# Then add the HASS_TOKEN to secrets.yaml (see README.md for instructions)
-# and copy get_raw_history.py to /config/python_scripts/
-#
-# Requires: python_script integration enabled in configuration.yaml
-#            (just add python_script: on its own line)
-#
-# Provides:
-#   - rest_command.get_raw_history_api  — calls HA's /api/history/period/ endpoint
-#   - python_script.get_raw_history     — validates, processes, and returns history data
-#   - script.get_raw_history            — LLM-friendly wrapper script
-#   - intent_script.GetRawHistory       — Assist pipeline intent (optional)
-# ==============================================================================
-
-# ==============================================================================
-# REST COMMAND — Direct API call to HA's raw history endpoint
-# This is the bridge: python_script cannot make HTTP calls, so rest_command
-# handles the actual API request using the stored HASS_TOKEN.
+# Copy this file to /config/packages/ and add hass_token to secrets.yaml
 # ==============================================================================
 rest_command:
   get_raw_history_api:
-    url: >-
-      http://localhost:8123/api/history/period/{{ start_time }}
-      ?filter_entity_id={{ entity_id }}
-      &end_time={{ end_time }}
-      &minimal_response=true
-      &significant_changes_only=true
+    url: "http://localhost:8123/api/history/period/{{ start_time }}?filter_entity_id={{ entity_id }}&end_time={{ end_time }}&minimal_response=true&significant_changes_only=true"
     method: GET
     headers:
-      Authorization: "Bearer !secret hass_token"
+      Authorization: *** !secret hass_token"
       Content-Type: "application/json"
     timeout: 15
 
-# ==============================================================================
-# PYTHON SCRIPT — Main logic layer
-# Validates inputs, calls rest_command, processes response, returns clean data.
-# ==============================================================================
 python_script:
 
-# ==============================================================================
-# SCRIPT — LLM-friendly wrapper that the conversation agent can call
-# The LLM calls script.get_raw_history with entity_id and optional params.
-# ==============================================================================
 script:
   get_raw_history:
     alias: Get Raw State History
-    description: >-
-      Returns raw state changes for any entity (covers, switches, sensors, etc.)
-      over a time period. Use this for questions like "was the curtain open at
-      3pm yesterday?" or "when did the garage door last open?"
+    description: Returns raw state changes for any entity type over a time period.
     fields:
       entity_id:
-        description: "Full entity ID (e.g. cover.curtain, sensor.outside_temperature)"
+        description: "Full entity ID (e.g. cover.curtain)"
         required: true
         selector:
           text: null
       start_time:
-        description: "ISO 8601 start time (optional, defaults to 24h ago)"
+        description: "ISO 8601 start (optional, defaults to 24h ago)"
         required: false
         selector:
           text: null
       end_time:
-        description: "ISO 8601 end time (optional, defaults to now)"
+        description: "ISO 8601 end (optional, defaults to now)"
         required: false
         selector:
           text: null
       debug:
-        description: "Set to true to enable verbose tracing in HA logs"
+        description: "Enable verbose tracing"
         required: false
         selector:
           boolean:
@@ -82,10 +48,6 @@ script:
         response_variable: history_result
       - stop: "{{ history_result }}"
 
-# ==============================================================================
-# INTENT SCRIPT — Optional: expose via Assist pipeline as GetRawHistory
-# The LLM can also call this directly if exposed as an Assist intent.
-# ==============================================================================
 intent_script:
   GetRawHistory:
     alias: Get Raw State History for an Entity
