@@ -35,7 +35,9 @@ Registered as a custom `llm.API` (ID: `raw_history`, name: `Raw History`). When 
 - **Returns:** List of state changes with state and local timestamp.
 
 **GetStatistics** — for numeric aggregates (temperature, humidity, power):
-- `entity_id` (required) — e.g. `sensor.bedroom_bluetooth_temperature_temperature`
+- `entity_id` (optional) — specific sensor, e.g. `sensor.bedroom_bluetooth_temperature_temperature`
+- `device_class` (optional) — compare all sensors of a type, e.g. `temperature`, `humidity`, `power`
+  (provide one or the other, not both)
 - `statistic` (optional) — `min`, `max`, `mean`, `sum`, or `all` (default)
 - `period` (optional) — `hour`, `day` (default), `week`, `month`, `year`
 - `start_time` (optional, ISO format, defaults to 30 days ago)
