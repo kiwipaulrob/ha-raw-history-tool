@@ -20,3 +20,48 @@ get_history:
       example: "2026-06-25T12:00:00"
       selector:
         text:
+
+get_statistics:
+  name: Get Statistics
+  description: >
+    Retrieve numeric aggregate statistics (min, max, mean, sum) for a
+    sensor entity from the HA recorder. Only works for entities with
+    state_class: measurement (temperature, humidity, power sensors).
+  fields:
+    entity_id:
+      required: true
+      example: "sensor.bedroom_bluetooth_temperature_temperature"
+      selector:
+        text:
+    statistic:
+      required: false
+      example: "min"
+      selector:
+        select:
+          options:
+            - "min"
+            - "max"
+            - "mean"
+            - "sum"
+            - "all"
+    period:
+      required: false
+      example: "day"
+      selector:
+        select:
+          options:
+            - "hour"
+            - "day"
+            - "week"
+            - "month"
+            - "year"
+    start_time:
+      required: false
+      example: "2026-01-01T00:00:00"
+      selector:
+        text:
+    end_time:
+      required: false
+      example: "2026-06-26T00:00:00"
+      selector:
+        text:

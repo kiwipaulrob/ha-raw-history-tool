@@ -3,8 +3,9 @@
 DOMAIN = "ha_raw_history"
 CONF_LLM_HASS_API = "llm_hass_api"
 
-# Tool name as it appears to the LLM
+# Tool names as they appear to the LLM
 TOOL_GET_RAW_HISTORY = "GetRawHistory"
+TOOL_GET_STATISTICS = "GetStatistics"
 
 # Default time range (24 hours)
 DEFAULT_HISTORY_HOURS = 24

@@ -26,14 +26,22 @@ LLM -> GetRawHistory tool (via Assist API) -> recorder.history.get_significant_s
 
 ### 1. LLM Tool: `GetRawHistory`
 
-Registered as a custom `llm.API` (ID: `raw_history`, name: `Raw History`). When selected alongside `Assist` in your conversation agent config, the LLM gains a tool that queries state history for **any** entity type — covers, switches, sensors, lights, locks, climate, etc.
+Registered as a custom `llm.API` (ID: `raw_history`, name: `Raw History`). When selected alongside `Assist` in your conversation agent config, the LLM gains tools for querying state history for **any** entity type.
 
-**Parameters:**
+**GetRawHistory** — for raw state changes (covers, switches, locks, presence):
 - `entity_id` (required) — e.g. `cover.curtain`, `sensor.outside_temperature`
 - `start_time` (optional, ISO format, defaults to 24h ago)
 - `end_time` (optional, ISO format, defaults to now)
+- **Returns:** List of state changes with state and local timestamp.
 
-**Returns:** List of state changes with state and local timestamp.
+**GetStatistics** — for numeric aggregates (temperature, humidity, power):
+- `entity_id` (required) — e.g. `sensor.bedroom_bluetooth_temperature_temperature`
+- `statistic` (optional) — `min`, `max`, `mean`, `sum`, or `all` (default)
+- `period` (optional) — `hour`, `day` (default), `week`, `month`, `year`
+- `start_time` (optional, ISO format, defaults to 30 days ago)
+- `end_time` (optional, ISO format, defaults to now)
+- **Returns:** Per-period min/max/mean/sum values plus overall aggregates.
+- **Note:** Only works for entities with `state_class: measurement` (temperature, humidity, power sensors, etc.)
 
 ### 2. Service: `ha_raw_history.get_history`
 

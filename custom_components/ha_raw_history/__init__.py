@@ -35,8 +35,9 @@ from homeassistant.helpers import config_validation as cv, llm
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.util import dt as dt_util
 
-from .const import API_ID, API_NAME, DOMAIN, TOOL_GET_RAW_HISTORY
+from .const import API_ID, API_NAME, DOMAIN, TOOL_GET_RAW_HISTORY, TOOL_GET_STATISTICS
 from .history_tool import GetRawHistoryTool
+from .statistics_tool import GetStatisticsTool
 
 SERVICE_GET_HISTORY = "get_history"
 
@@ -169,18 +170,26 @@ class RawHistoryAPI(llm.API):
     async def async_get_api_instance(
         self, llm_context: llm.LLMContext
     ) -> llm.APIInstance:
-        """Return an API instance with the GetRawHistory tool."""
+        """Return an API instance with tools."""
         api_prompt = (
-            "You have access to the GetRawHistory tool which can retrieve "
-            "the state history of any entity over a time period. "
-            "Use it when asked about past states, history, or trends of covers, "
-            "switches, sensors, lights, locks, climate devices, or any other entity. "
-            "The tool returns every state change with timestamps."
+            "You have access to two history tools:\n"
+            "1. GetRawHistory - retrieves raw state changes for any entity "
+            "(covers, switches, locks, etc.). Returns every state change "
+            "with timestamps. Use for questions like 'was the curtain open "
+            "at 3pm yesterday?' or 'when did the front door unlock?'.\n"
+            "2. GetStatistics - retrieves numeric aggregate statistics "
+            "(min, max, mean) for sensor entities with state_class. "
+            "Use for questions like 'what is the coldest the bedroom has "
+            "ever been?' or 'what was the highest temperature today?'.\n\n"
+            "IMPORTANT: For both tools, use the entity_id parameter with "
+            "the full entity ID format (e.g. 'cover.curtain', "
+            "'sensor.bedroom_bluetooth_temperature_temperature'). "
+            "Do NOT use friendly names."
         )
 
         return llm.APIInstance(
             api=self,
             api_prompt=api_prompt,
             llm_context=llm_context,
-            tools=[GetRawHistoryTool()],
+            tools=[GetRawHistoryTool(), GetStatisticsTool()],
         )
