@@ -1,0 +1,22 @@
+get_history:
+  name: Get Raw History
+  description: >
+    Retrieve complete state change history for any entity from the HA
+    recorder database. Works for covers, switches, sensors, lights,
+    locks, climate, and all other entity types.
+  fields:
+    entity_id:
+      required: true
+      example: "cover.curtain"
+      selector:
+        text:
+    start_time:
+      required: false
+      example: "2026-06-24T12:00:00"
+      selector:
+        text:
+    end_time:
+      required: false
+      example: "2026-06-25T12:00:00"
+      selector:
+        text:

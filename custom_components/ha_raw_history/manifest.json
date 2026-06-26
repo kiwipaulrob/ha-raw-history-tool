@@ -1,0 +1,13 @@
+{
+  "domain": "ha_raw_history",
+  "name": "HA Raw History",
+  "version": "1.0.0",
+  "codeowners": ["@kiwipaulrob"],
+  "requirements": [],
+  "dependencies": ["recorder", "conversation"],
+  "integration_type": "hub",
+  "iot_class": "local_polling",
+  "config_flow": false,
+  "documentation": "https://github.com/kiwipaulrob/ha-raw-history-tool",
+  "issue_tracker": "https://github.com/kiwipaulrob/ha-raw-history-tool/issues"
+}
